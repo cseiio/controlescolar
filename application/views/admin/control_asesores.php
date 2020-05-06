@@ -66,8 +66,12 @@
 
         
       <div class="row justify-content-end">
-        <div class="col-2"><button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#agregar"
-                    id="agregar_usuario">Agregar Asesor</button>
+        <div class="col-2"><button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#modal_agregar"
+                    id="agregar_usuario" onclick="reset_form_asesor()">Agregar Asesor</button>
+         </div>
+
+         <div class="col-2"><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modal_importar"
+                    id="importar_asesor" onclick="reset_modal_importar()">Importar Asesor</button>
          </div>
   		</div>
 <br>
@@ -107,37 +111,63 @@
 <!-- /#wrapper -->
 
 
-<!-- Inicia modal para agregar asesor-->
+<!-- Inicia modal para importar asesor-->
 
-<div class="modal" tabindex="-1" role="dialog" id="modal_modificar_asesor">
+<div class="modal" tabindex="-1" role="dialog" id="modal_importar">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 80% !important;" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Modificar Asesor</h5>
+        <h5 class="modal-title">Importar Asesor</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form id="agregar_asesor">
+      
+      <form id="importar_asesor">
       
        <div class="modal-body">
-           <table class="table table-hover" id="" style="width: 100%"  border="1">
+
+
+       <div class="card">
+      <div class="card-body">
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-label-group ">
+                <input type="text" name="asesor_curp_busqueda_importar" pattern="[A-Za-z0-9]{18}" title="Faltan datos" class="form-control text-uppercase"
+                  id="asesor_curp_busqueda_importar" placeholder="CURP" style="color: #237087">
+                <label for="asesor_curp_busqueda_importar">CURP</label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button type='button' class="btn btn-success btn-lg btn-block" id="btn_buscar_importar"
+                onclick='buscar_importar()'>Buscar</button>
+            </div>
+          </div>
+        </div>        
+        
+      </div>
+    </div>
+
+           <table class="table table-hover" id="tabla_completa_importar" style="width: 100%">
           
                       <thead class="thead-light">
                         <tr>
 
-                          <th scope="col" class="col-md-1">Materia</th>
-                          <th scope="col" class="col-md-1">Clave</th>
-                          <th scope="col" class="col-md-1">Parcial 1</th>
-                          <th scope="col" class="col-md-1">Parcial 2</th>
-                          <th scope="col" class="col-md-1">Parcial 3</th>
-                          <th scope="col" class="col-md-1">Examen Final</th>
+                        <th scope="col" class="col-md-1">Nombre Completo</th>
+              <th scope="col" class="col-md-1">CCT procedencia</th>
+              <th scope="col" class="col-md-1">CURP</th>
+              <th scope="col" class="col-md-1">Puesto de trabajo</th>
+              
+              <th scope="col" class="col-md-1">Importar</th>
                         </tr>
                       </thead>
 
 
 
-                        <tbody id="tabla_completa">
+                        <tbody id="tabla_importar">
+
                                   
                         </tbody>
         </table>
@@ -153,11 +183,11 @@
   </div>
 </div>
 
-<!--Termina modal para agregar asesor-->
+<!--Termina modal para importar asesor-->
 
 <!-- Inicia modal para agregar asesor-->
 
-<div class="modal" tabindex="-1" role="dialog" id="agregar">
+<div class="modal" tabindex="-1" role="dialog" id="modal_agregar">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 80% !important;" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -208,7 +238,7 @@
               <div class="col-md-4">
                 <div class="form-label-group">
                   <input type="text" pattern="[A-Za-z0-9]{18}" title="Faltan datos" class="form-control text-uppercase"
-                    id="asesor_curp" name="asesor_curp" placeholder="CURP" style="color: #237087">
+                    id="asesor_curp" name="asesor_curp" placeholder="CURP" style="color: #237087" required >
                   <label for="asesor_curp">CURP</label>
                 </div>
               </div>
@@ -217,7 +247,7 @@
               <div class="col-md-4">
                 <div class="form-label-group">
                   <input type="text" pattern="[A-Za-z0-9]{13}" title="Faltan datos" class="form-control text-uppercase"
-                    id="asesor_rfc" name="asesor_rfc" placeholder="RFC" style="color: #237087">
+                    id="asesor_rfc" name="asesor_rfc" placeholder="RFC" style="color: #237087" required >
                   <label for="asesor_rfc">RFC</label>
                 </div>
               </div>
@@ -239,9 +269,16 @@
             	<div class="col-md-6">
                 <label class="form-group has-float-label seltitulo">
                   <select class="form-control form-control-lg selcolor" name="asesor_puesto"
-                    onChange=""
-                    id="asesor_puesto">
-                    <option></option>
+                  onChange="obtener_categoria_x_puesto()"
+                    id="asesor_puesto" required >
+                    <option value="">Seleccione el puesto</option>
+
+                          <?php
+                            foreach ($puestos_trabajo as $p)
+                            {
+                              echo '<option value="'.$p->id_puesto.'">'.$p->nombre_puesto.'</option>';
+                            }
+                            ?>
                   </select>
                   <span>Puesto</span>
                 </label>
@@ -249,10 +286,8 @@
               
               <div class="col-md-6">
                 <label class="form-group has-float-label seltitulo">
-                  <select class="form-control form-control-lg selcolor" name="asesor_categoria"
-                    onChange=""
-                    id="asesor_categoria">
-                    <option></option>
+                  <select class="form-control form-control-lg selcolor" name="asesor_categoria" id="asesor_categoria" required >
+                    <option value="">Seleccione la categoria</option>
                   </select>
                   <span>Categoría</span>
                 </label>
@@ -267,8 +302,12 @@
                 <label class="form-group has-float-label seltitulo">
                   <select class="form-control form-control-lg selcolor" name="asesor_modalidad"
                     onChange=""
-                    id="asesor_modalidad">
-                    <option></option>
+                    id="asesor_modalidad" required >
+                    <option value="">Seleccione tipo modalidad</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
                   </select>
                   <span>Modalidad</span>
                 </label>
@@ -278,8 +317,15 @@
                 <label class="form-group has-float-label seltitulo">
                   <select class="form-control form-control-lg selcolor" name="asesor_plantel"
                     onChange=""
-                    id="asesor_plantel">
-                    <option></option>
+                    id="asesor_plantel" required >
+                    <option value="">Seleccione el plantel</option>
+
+                    <?php
+                      foreach ($planteles as $plantel)
+                      {
+                        echo '<option value="'.$plantel->cct_plantel.'">'.$plantel->nombre_corto.' DE '.$plantel->nombre_plantel.' ----- CCT: '.$plantel->cct_plantel.'</option>';
+                      }
+                      ?>
                   </select>
                   <span>Plantel CCT</span>
                 </label>
@@ -299,8 +345,8 @@
             <div class="col-md-4">
                 <div class="form-label-group">
                   <input type="date" title="Faltan datos" class="form-control text-uppercase"
-                    id="asesor_fecha_nacimiento" name="asesor_fecha_nacimiento" placeholder="Fecha " style="color: #237087">
-                  <label for="asesor_fecha_nacimiento">Fechade nacimiento</label>
+                    id="asesor_fecha_ingreso" name="asesor_fecha_ingreso" placeholder="Fecha " style="color: #237087" required >
+                  <label for="asesor_fecha_ingreso">Fechade nacimiento</label>
                 </div>
               </div>
           
@@ -332,7 +378,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form id="agregar_asesor">
+      <form id="modificar_asesor" method="post">
       
        <div class="modal-body">
            <table class="table table-hover" id="" style="width: 100%"  border="1">
@@ -373,6 +419,147 @@
 
 
 <script>
+function reset_modal_importar(){
+  document.getElementById("asesor_curp_busqueda_importar").value="";
+  borrar_formato_tabla_importar();
+  document.getElementById("tabla_importar").innerHTML = "";
+}
+
+
+function buscar_importar() {
+  borrar_formato_tabla_importar();
+        document.getElementById("tabla_importar").innerHTML = "";
+        var curp = document.getElementById("asesor_curp_busqueda_importar").value;
+  
+  var xhr_verificar = new XMLHttpRequest();
+
+  xhr_verificar.open('GET', '<?php echo base_url();?>index.php/c_asesor/existe_asesor_x_curp?curp='+curp, true);
+  xhr_verificar.onloadstart = function () {
+        $('#div_carga').show();
+      }
+      xhr_verificar.error = function () {
+        console.log("error de conexion");
+      }
+      xhr_verificar.onload = function () {
+        $('#div_carga').hide();
+        if (xhr_verificar.response.trim() === "baja") {
+          //Ejecutar si existe asesor
+              
+
+        var query = 'curp='+curp;
+        var xhr = new XMLHttpRequest();
+          xhr.open('GET', '<?php echo base_url();?>index.php/C_asesor/buscar_asesor_baja_x_curp?'+query, true);
+          xhr.onloadstart = function(){
+            $('#div_carga').show();
+          }
+          xhr.error = function (){
+            console.log("error de conexion");
+          }
+          xhr.onload = function(){
+            $('#div_carga').hide();
+            //console.log(JSON.parse(xhr.response));
+            let datos = JSON.parse(xhr.response);
+            //datos de materia
+            JSON.parse(xhr.response).forEach(function (valor, indice) {
+              console.log(valor);
+              var fila = '<tr>';
+
+              fila += '<td>';
+              fila += valor.primer_apellido+' '+valor.segundo_apellido+' '+valor.nombre;
+              fila += '</td>';
+
+              fila += '<td>';
+              fila += valor.Plantel_cct_plantel;
+              fila += '</td>';
+
+              fila += '<td>';
+              fila += valor.curp;
+              fila += '</td>';
+
+              fila += '<td>';
+              fila += valor.puesto;
+              fila += '</td>';
+
+              fila += '<td>';
+              fila += '<button class="btn btn-lg btn-block btn-success" type="button" value="" onclick="cargar_datos_materias(this)" class="btn btn-primary" data-toggle="modal" data-target="#modal_modificar_asesor">Importar</button>';
+              fila += '</td>';
+
+
+
+
+
+              fila += '</tr>';
+
+              document.getElementById("tabla_importar").innerHTML += fila;
+            });
+
+            formato_tabla_importar();
+          }
+
+          xhr.send(null);
+
+          
+          //Fin si existe asesor
+        } 
+        else {
+          var mensaje="";
+            if(xhr_verificar.response.trim()=="alta"){
+                mensaje="El Asesor con CURP "+curp+" se encuentra dado de alta, solicite su baja para incorporarlo al plantel";
+              
+            }
+            else if(xhr_verificar.response.trim()=="no_existe"){
+              mensaje="El Asesor con CURP "+curp+" no existe en la base de datos";
+
+              
+          }
+            Swal.fire({
+            type: 'info',
+            scrollbarPadding:false,
+            title: mensaje,
+            showConfirmButton: false
+          });
+            
+
+        }
+      };
+      xhr_verificar.send(null);
+
+      
+    }
+
+
+
+    function formato_tabla_importar() {
+  $('#tabla_completa_importar').DataTable({
+    //"order": [[ 0, 'desc' ]],
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ ",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "No se encontraron resultados",
+      "sInfo": "Mostrando del _START_ al _END_ de un total de _TOTAL_ ",
+      "sInfoEmpty": "Mostrando del 0 al 0 de un total de 0 ",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ )",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar específico:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+        "sFirst": "Primero",
+        "sLast": "Último",
+        "sNext": "Siguiente",
+        "sPrevious": "Anterior"
+      },
+      "oAria": {
+        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+}
+
+
 
 function buscar() {
     document.getElementById("asesor_plantel_busqueda").disabled = true;
@@ -383,7 +570,7 @@ function buscar() {
 
     var query = 'curp=' + curp + '&cct_plantel=' + plantel;
     var xhr = new XMLHttpRequest();
-      xhr.open('GET', '<?php echo base_url();?>index.php/C_asesor/buscar_asesores_plantel?'+query, true);
+      xhr.open('GET', '<?php echo base_url();?>index.php/C_asesor/buscar_asesores_activos_plantel?'+query, true);
       xhr.onloadstart = function(){
         $('#div_carga').show();
       }
@@ -421,7 +608,7 @@ function buscar() {
 
 
           fila += '<td>';
-          fila += '<button class="btn btn-lg btn-block btn-danger" type="button" value="" onclick="cargar_datos_materias(this)" class="btn btn-primary" data-toggle="modal" data-target="#modal_eliminar_asesor">Eliminar</button>';
+          fila += '<button class="btn btn-lg btn-block btn-danger" type="button" value="'+valor.id_asesor+'" onclick="eliminar_asesor(this)" class="btn btn-primary" data-toggle="modal" data-target="#modal_eliminar_asesor">Eliminar</button>';
           fila += '</td>';
 
 
@@ -451,4 +638,196 @@ function buscar() {
     document.getElementById('btn_buscar').innerHTML = 'Limpiar Búsqueda';
   }
 
+
+  
+  
+  function obtener_categoria_x_puesto() {
+
+if (document.getElementById("asesor_puesto").value === "") {
+  asesor_categoria.innerHTML = "";
+  var option = document.createElement("option");
+      option.text = "Seleccione la categoria";
+      option.value = "";
+      asesor_categoria.add(option);
+  
+} else {
+  var xhr = new XMLHttpRequest();
+  var id_puesto = document.getElementById("asesor_puesto").value;
+
+  asesor_categoria.innerHTML = "";
+  xhr.open('GET', '<?php echo base_url();?>index.php/c_asesor/get_categoria_x_puesto?id_puesto=' + id_puesto, true);
+  xhr.onloadstart = function () {
+    $('#div_carga').show();
+  }
+  xhr.error = function () {
+    console.log("error de conexion");
+  }
+  xhr.onload = function () {
+    $('#div_carga').hide();
+
+    if(JSON.parse(xhr.response).length>0){
+      var lista="";
+            
+            JSON.parse(xhr.response).forEach(function(valor){
+                lista+="<option value='"+valor.id_categoria+"'>"+valor.nombre_categoria+"</option>"
+            });
+            asesor_categoria.innerHTML=lista;
+            
+          } 
+  };
+  xhr.send(null);
+}
+}
+
+
+var form = document.getElementById("agregar_asesor");
+
+form.onsubmit = function (e) {
+    e.preventDefault();
+    var xhr = new XMLHttpRequest();
+    var formdata = new FormData(form);
+  xhr.open("POST", "<?php echo base_url();?>index.php/c_asesor/alta", true);
+  xhr.onloadstart = function(){
+        $('#div_carga').show();
+      }
+      xhr.error = function (){
+        console.log("error de conexion");
+      }
+  xhr.onreadystatechange = function () {
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+      console.log(xhr.responseText);
+      $('#div_carga').hide();
+      if (xhr.responseText.trim() === "si") {
+        $('#modal_agregar').modal('toggle');
+        Swal.fire({
+          type: 'success',
+          title: 'Registro exitoso',
+          allowOutsideClick: false,
+          confirmButtonText: "Aceptar"
+        }).then((result) => {
+            if (result.value) {
+              //aqui va el aceptar
+              $(document).scrollTop(0);
+              location.reload();
+            }
+            //aqui va si cancla
+          }); 
+      }
+     else if(xhr.responseText.trim() === "existe_curp"){
+            Swal.fire({
+              type: 'error',
+              title: 'El asesor ya se encuentra registrado en la base de datos, contacte con el administrador',
+              showConfirmButton: false,
+              timer: 2500
+            });
+
+      }
+
+      else {
+        Swal.fire({
+          type: 'error',
+          title: 'Ha ocurrido un error',
+          showConfirmButton: false,
+          timer: 2500
+        });
+      }
+    }
+  }
+  xhr.send(formdata);
+
+  }
+
+  function eliminar_asesor(valor) {
+    var id_asesor=valor.value;
+
+    var datos = new Array();
+
+        dato={idasesor:id_asesor};
+
+          datos.push(dato);
+        
+
+    var xhr = new XMLHttpRequest();
+        xhr.open("POST", '<?php echo base_url();?>index.php/C_asesor/eliminar', true);
+    
+    swalWithBootstrapButtons.fire({
+          type: 'info',
+          text: '¿Está seguro de dar de baja al asesor?',
+          confirmButtonText: 'Aceptar',
+          allowOutsideClick: false,
+          showCancelButton: 'true',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.value) {
+          //Send the proper header information along with the request
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onloadstart = function () {
+          $('#div_carga').show();
+        }
+        xhr.error = function () {
+          console.log("error de conexion");
+        }
+        xhr.onreadystatechange = function () { // Call a function when the state changes.
+          if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            $('#div_carga').hide();
+            if (xhr.responseText.trim() === "si") {
+              console.log(xhr.response);
+              swalWithBootstrapButtons.fire({
+                type: 'success',
+                text: 'El asesor ha sido dado de baja correctamente',
+                allowOutsideClick: false,
+                confirmButtonText: 'Aceptar'
+              }).then((result) => {
+                if (result.value) {
+                  //aqui va el aceptar
+                  $(document).scrollTop(0);
+                  //location.reload(); 
+                  refrescar_tabla();
+
+                  
+                }
+                //aqui va si cancela
+              });
+            } else {
+              Swal.fire({
+                type: 'error',
+                text: 'No es posible dar de baja al asesor, vuelva a intentarlo.'
+              });
+            }
+          }
+        }
+        xhr.send(JSON.stringify(datos));
+        console.log(datos);
+        
+        }
+        });
+
+
+
+  }
+
+  function refrescar_tabla(){
+  borrar_formato_tabla();
+  buscar();
+}
+
+function borrar_formato_tabla_importar(){
+      $("#tabla_completa_importar").dataTable().fnDestroy();
+      
+    }
+
+ function borrar_formato_tabla(){
+      $("#tabla_completa").dataTable().fnDestroy();
+      
+    }
+
+    function reset_form_asesor() {
+      document.getElementById("agregar_asesor").reset();
+      asesor_categoria.innerHTML = "";
+  var option = document.createElement("option");
+      option.text = "Seleccione la categoria";
+      option.value = "";
+      asesor_categoria.add(option);
+
+    }
 </script>

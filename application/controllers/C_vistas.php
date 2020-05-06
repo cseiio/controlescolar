@@ -14,6 +14,7 @@ class C_vistas extends CI_Controller {
         $this->load->model('M_ciclo_escolar');
         $this->load->model('M_componente');
         $this->load->model('M_usuario');
+        $this->load->model('M_asesor');
     }
     
     public function prueba(){
@@ -521,6 +522,7 @@ public function resolucion_equivalencia(){
     public function control_asesores(){
         if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='ADMINISTRADOR'){
         $datos['planteles'] = $this->M_plantel->get_planteles();
+        $datos['puestos_trabajo'] = $this->M_asesor->get_puestos();
         $data= array('title'=>'Control Asesores');
         $this->load->view("headers/cabecera", $data);
         $this->load->view("headers/menuarriba");
