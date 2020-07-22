@@ -238,7 +238,218 @@ $plantilla_excel = $spreadsheet->getSheet($indiceHoja);
 $tipo_operacion_excel='';
 $tipo_operacion_excel= trim($plantilla_excel->getCell('B1')->getValue());
 
+if($tipo_operacion_excel==""){
+	$tipo_operacion_excel= trim($plantilla_excel->getCell('C1')->getValue());
+	if($tipo_operacion_excel=="POR_MATERIA"){
+		$tipo_operacion_excel="POR_MATERIA";
+	}
+}
+
 switch ($tipo_operacion_excel) {
+
+
+			case 'POR_MATERIA'://Empieza caso envío masivo
+				$this->form_validation->set_rules('fileURL','Upload File', 'callback_checkValidateMasivoExcel');
+				if($this->form_validation->run() != false){
+				
+				$indiceHoja = 0;
+				$id_ciclo_escolar="";
+				$id_periodo="";
+				$id_grupo="";
+				$existe_grupo="";
+				
+                    $masivo_excel = $spreadsheet->getSheet($indiceHoja);
+                   // echo "<h3>Vamos en la hoja con índice $indiceHoja</h3>";
+                    
+                    # Lo que hay en B2
+                    $celda = $masivo_excel->getCell('C2');
+                    # El valor, así como está en el documento
+					$plantel_cct = trim($celda->getValue());
+					$nombre_ciclo_escolar= trim($masivo_excel->getCell('C3')->getValue());
+					$periodo= trim($masivo_excel->getCell('C4')->getValue());
+					$modulo= trim($masivo_excel->getCell('G1')->getValue());
+					$grupo= trim($masivo_excel->getCell('G2')->getValue());
+					$clave_materia= trim($masivo_excel->getCell('G4')->getCalculatedValue());
+					$id_ciclo_escolar=$this->M_ciclo_escolar->get_id_ciclo_escolar_x_periodo_x_nombre($periodo,$nombre_ciclo_escolar)->id_ciclo_escolar;
+					
+					if(trim($periodo) == "AGOSTO-ENERO"){
+						$id_periodo="B";
+					  }else{
+						$id_periodo="A";
+					  }
+
+					  $id_grupo=$plantel_cct.$modulo.$id_ciclo_escolar.$id_periodo.$grupo;// GENERANDO ID_GRUPO
+					  $existe_grupo=count($this->M_grupo->existe_id_grupo_ciclo_anterior($id_grupo));//Utilizamos este metodo con la finalidad de reutilizar codigo existente.
+
+
+
+
+					
+
+					
+					$cont_fila=0;
+					foreach ($masivo_excel->getRowIterator(9) as $fila) {
+						$cont_columnas_excel=0;
+						$cont_columnas_baja=0;
+						$fila=$fila->getCellIterator("B","M");
+						$curp="";
+						$matricula="";
+						$p1=null;
+						$p2=null;
+						$p3=null;
+						$examen_final=null;
+						$cal_final=null;
+
+						$anio_baja="";
+						$mes_baja="";
+						$dia_baja="";
+
+						$motivo_baja="";
+						
+
+
+						foreach ($fila as $celda) {
+
+							//if(!is_null($celda->getValue())){
+								$fila = $celda->getRow();
+								# Columna, que es la A, B, C y así...
+								$columna = $celda->getColumn();
+								
+								if($columna=='B' && !is_null($celda->getValue())){
+									$curp=trim($celda->getCalculatedValue());
+									$cont_columnas_excel++;
+								}
+
+								if($columna=='C'){
+									$matricula=trim($celda->getCalculatedValue());
+									$cont_columnas_excel++;
+								}
+
+								if($columna=='D' && !is_null($celda->getValue())){
+									$p1=trim($celda->getCalculatedValue());
+									$cont_columnas_excel++;
+									if($p1=='/'){
+										$p1=0;
+									}
+								}
+								if($columna=='E' && !is_null($celda->getValue())){
+									$p2=trim($celda->getCalculatedValue());
+									$cont_columnas_excel++;
+									if($p2=='/'){
+										$p2=0;
+									}
+								}
+								if($columna=='F' && !is_null($celda->getValue())){
+									$p3=trim($celda->getCalculatedValue());
+									$cont_columnas_excel++;
+									if($p3=='/'){
+										$p3=0;
+									}
+								}
+								if($columna=='H' && !is_null($celda->getValue())){
+									$examen_final=trim($celda->getCalculatedValue());
+									$cont_columnas_excel++;
+									if($examen_final=='/'){
+										$examen_final=0;
+									}
+								}
+								if($columna=='I' && !is_null($celda->getValue())){
+									$cal_final=trim($celda->getCalculatedValue());
+									$cont_columnas_excel++;
+									if($cal_final=='/'){
+										$cal_final=0;
+									}
+								}
+								if($columna=='J' && !is_null($celda->getValue()) ){
+									$anio_baja=trim($celda->getCalculatedValue());
+									$cont_columnas_baja++;
+									
+								}
+								if($columna=='K' && !is_null($celda->getValue()) ){
+									$mes_baja=trim($celda->getValue());
+									$cont_columnas_baja++;
+									
+								}
+								if($columna=='L' && !is_null($celda->getValue())){
+									$dia_baja=trim($celda->getCalculatedValue());
+									$cont_columnas_baja++;
+									
+								}
+								if($columna=='M' && !is_null($celda->getValue())){
+									$motivo_baja=trim($celda->getCalculatedValue());
+									$cont_columnas_baja++;
+									
+								}
+
+								
+
+							//}
+						
+						}
+						$cont_fila++;
+						
+
+						if($cont_fila>=35){
+							break;
+
+						}
+						else{
+
+							
+							if ($existe_grupo!=0 && $cont_columnas_excel==7) 
+							{
+								$datos_estudiante=$this->M_estudiante->get_estudiante_x_curp_matricula($curp,$matricula);
+								if(count($datos_estudiante)>0){//Inicio de existe alumno.
+
+									$parametros_estudiante_update_cal = array(
+										'id_grupo' => $id_grupo,
+										'no_control' =>$datos_estudiante[0]->no_control,
+										'id_ciclo_escolar' =>$id_ciclo_escolar,
+										'id_materia' => $clave_materia
+									);
+
+										$datos_calificacion_estudiante_update = array(
+											'primer_parcial'=>$p1,
+											'segundo_parcial'=>$p2,
+											'tercer_parcial'=>$p3,
+											'examen_final'=>$examen_final
+											//'calificacion_final'=>$cal_final
+										);
+										$this->M_grupo_estudiante->actualizar_calificaciones((object)$parametros_estudiante_update_cal,$datos_calificacion_estudiante_update);
+									if($cont_columnas_baja==4){
+										$fecha_baja="";
+										if($anio_baja!='' && $mes_baja!='' && $dia_baja!=''){
+											$fecha_baja=$anio_baja."-".$this->num_mes($mes_baja)."-".$dia_baja;
+										}
+										$id_friae=$this->M_friae->id_friae($id_grupo)[0]->folio;
+										$datos_baja = array(
+											'id_grupo'=>$id_grupo,
+											'no_control' => $datos_estudiante[0]->no_control,
+											'id_friae' => $id_friae,
+											'fecha_baja' =>$fecha_baja,
+											'motivo'=>$motivo_baja,
+											'anio_baja' =>$anio_baja,
+											'semestre'=>$modulo,
+											'periodo'=>$periodo
+								
+										);
+
+										$this->M_friae->estudiante_baja_masivo_friae((object)$datos_baja);
+		
+										
+
+									}
+								}//Fin de existe alumno.
+							}
+
+						}
+						
+					}
+
+					$this->session->set_flashdata('msg_exito', 'Los datos de alumnos se han agregado al sistema correctamente, para corroborar verique en los reportes');
+				}
+			break;//Termina caso de envío masivo
+
 			case 'BAJA SIN MATRICULA'://Empieza caso baja sin matricula
 			
 			$this->form_validation->set_rules('fileURL','Upload File', 'callback_checkValidateSinMatricula');
@@ -294,6 +505,7 @@ switch ($tipo_operacion_excel) {
 					$cont_materias_estudiante=0;// cuenta el número de materias subidas por el estudiante.
 					$resultado_error="";
 					$id_friae="";
+					$existe_id_friae=0;
 					
 //Empieza a leer hoja Friae y calificaciones_______________________________________________________________________
 					
@@ -316,13 +528,14 @@ switch ($tipo_operacion_excel) {
 					if ($existe_grupo==0) 
 						{
 							$this->M_grupo->agregar_grupo_de_ciclo_anterior($id_grupo,$modulo,$grupo,$plantel_cct);
+							
+						}
+
+						$existe_id_friae=count($this->M_friae->id_friae($id_grupo));
+						if($existe_id_friae==0){
 							$id_friae=$this->M_friae->crear_friae_ciclos_anteriores($id_grupo);
 						}
-
-
-						else{
-							$id_friae=$this->M_friae->id_friae($id_grupo)[0]->folio;
-						}
+						$id_friae=$this->M_friae->id_friae($id_grupo)[0]->folio;
 
 					
 						
@@ -698,6 +911,7 @@ switch ($tipo_operacion_excel) {
 					$id_grupo=""; //inicializamos variable id_grupo
 					$id_periodo="";//inicalizamos variable periodo
 					$existe_grupo=0;//inicializamos varfiable existe grupo
+					$existe_id_friae=0;
 					$num_materias=0; //inicalizamos variable numero de materias semestre
 					
 					$cont_materias_reprobadas=0;// Contador de materias reprobadas por cada alumno
@@ -726,13 +940,14 @@ switch ($tipo_operacion_excel) {
 					if ($existe_grupo==0) 
 						{
 							$this->M_grupo->agregar_grupo_de_ciclo_anterior($id_grupo,$modulo,$grupo,$plantel_cct);
+							
+						}
+
+						$existe_id_friae=count($this->M_friae->id_friae($id_grupo));
+						if($existe_id_friae==0){
 							$id_friae=$this->M_friae->crear_friae_ciclos_anteriores($id_grupo);
 						}
-
-
-						else{
-							$id_friae=$this->M_friae->id_friae($id_grupo)[0]->folio;
-						}
+						$id_friae=$this->M_friae->id_friae($id_grupo)[0]->folio;
 
 					
 						
@@ -971,6 +1186,7 @@ switch ($tipo_operacion_excel) {
 					$id_grupo=""; //inicializamos variable id_grupo
 					$id_periodo="";//inicalizamos variable periodo
 					$existe_grupo=0;//inicializamos varfiable existe grupo
+					$existe_id_friae=0;
 					$num_materias=0; //inicalizamos variable numero de materias semestre
 					
 					$cont_materias_reprobadas=0;// Contador de materias reprobadas por cada alumno
@@ -1006,12 +1222,13 @@ switch ($tipo_operacion_excel) {
 						{
 							$this->M_grupo->agregar_grupo_de_ciclo_anterior($id_grupo,$modulo,$grupo,$plantel_cct);
 
-							$id_friae=$this->M_friae->crear_friae_ciclos_anteriores($id_grupo);
-
 						}
-						else{
+						
+						$existe_id_friae=count($this->M_friae->id_friae($id_grupo));
+							if($existe_id_friae==0){
+								$id_friae=$this->M_friae->crear_friae_ciclos_anteriores($id_grupo);
+							}
 							$id_friae=$this->M_friae->id_friae($id_grupo)[0]->folio;
-						}
 
 					
 						
@@ -2691,6 +2908,271 @@ $this->session->set_flashdata('msg_exito', 'Los datos del alumno se han agregado
 					  
 		
 	  }
+
+	  public function checkValidateMasivoExcel($spreadsheet) {
+		$indiceHoja = 0;
+		$id_ciclo_escolar="";
+		$id_periodo="";
+		$id_grupo="";
+		$existe_grupo="";
+		$resultado_error="";
+		
+			$masivo_excel = $this->get_archivo()->getSheet($indiceHoja);
+		   // echo "<h3>Vamos en la hoja con índice $indiceHoja</h3>";
+			
+			# Lo que hay en B2
+			$celda = $masivo_excel->getCell('C2');
+			# El valor, así como está en el documento
+			$plantel_cct = trim($celda->getValue());
+			$tipo_operacion = $masivo_excel->getCell('C1');
+			$nombre_ciclo_escolar= trim($masivo_excel->getCell('C3')->getValue());
+			$periodo= trim($masivo_excel->getCell('C4')->getValue());
+			$modulo= trim($masivo_excel->getCell('G1')->getValue());
+			$grupo= trim($masivo_excel->getCell('G2')->getValue());
+			$clave_materia= trim($masivo_excel->getCell('G4')->getCalculatedValue());
+
+			$existe_ciclo_escolar=0;
+			$existe_ciclo_escolar=$this->M_ciclo_escolar->existe_ciclo_escolar_x_periodo_x_nombre($periodo,$nombre_ciclo_escolar);
+			if($existe_ciclo_escolar<=0){
+				$resultado_error.="<li>Verifique si ha ingresado correctamente los datos de ciclo escolar y periodo.</li>";
+			}
+			else{
+				$id_ciclo_escolar=$this->M_ciclo_escolar->get_id_ciclo_escolar_x_periodo_x_nombre($periodo,$nombre_ciclo_escolar)->id_ciclo_escolar;
+			}
+			
+
+			if($tipo_operacion!='POR_MATERIA'){
+				$resultado_error.="<li>Verifique si esta utilizando la plantilla de envío masivo en Excel.</li>";
+			}
+
+			if($plantel_cct==""){
+					$resultado_error.="<li>No ha seleccionado CCT de un Plantel.</li>";  
+			}
+
+			else{
+				if(empty($this->M_plantel->get_plantel($plantel_cct))){
+					$resultado_error.="<li>CCT de Plantel incorrecto, vuelva a seleccionar.</li>";
+				}
+			}
+			
+			if($nombre_ciclo_escolar==""){
+				$resultado_error.="<li>No ha seleccionado el ciclo escolar.</li>"; 
+
+		  	}
+		  	else{
+				if(empty($this->M_ciclo_escolar->existe_ciclo_escolar_x_periodo_x_nombre($periodo,$nombre_ciclo_escolar))){
+					$resultado_error.="<li>El ciclo escolar seleccionado no se encuentra dado de alta en el sistema, consulte al Depto. de Control Escolar.</li>";
+					
+				}
+		  	}
+			
+
+			  $id_periodo="";
+			  switch (trim($periodo)) {
+				case "AGOSTO-ENERO":
+					$id_periodo="B";
+					break;
+				case "FEBRERO-JULIO":
+					$id_periodo="A";
+					break;
+			}
+
+			if($id_periodo==""){
+				$resultado_error.="<li>Seleccione un periodo de ciclo escolar valido.</li>";
+			}
+			else{
+				$id_grupo=$plantel_cct.$modulo.$id_ciclo_escolar.$id_periodo.$grupo;// 
+				$existe_grupo=count($this->M_grupo->existe_id_grupo_ciclo_anterior($id_grupo));//Utilizamos este metodo con la finalidad de reutilizar codigo existente.
+				if($existe_grupo<=0){
+					$resultado_error.="<li>Verifique los datos ingresados en: <span style='font-weight:bold'>Plantel CCT, ciclo escolar, periodo, módulo y nombre de grupo</span>.</li>";
+				}
+			}
+
+			if($modulo=="" && $modulo>6){
+				$resultado_error.="<li>No ha seleccionado un semestre valido.</li>";  
+			  }
+			
+			if($grupo==""){
+				$resultado_error.="<li>No ha seleccionado un grupo.</li>";  
+			  }
+			if($clave_materia==""){
+				$resultado_error.="<li>No ha seleccionado la materia.</li>";  
+			  }
+			else{
+				if(count($this->M_materia->get_materia($clave_materia))==0){
+					$resultado_error.="<li>No es valida la clave de materia.</li>";
+				}
+			}
+
+			$cont_fila=0;
+			$cont_no_existe_alumno=0;
+			$mensaje_curp_no_existe="";
+			
+			$calificacion_valida = array("/",5,6,7,8,9,10);
+			$cont_cal_imcompleta=0;
+			$resultado_error_calificaciones="";
+			$cont_fila2=0;
+			foreach ($masivo_excel->getRowIterator(9) as $fila) {
+				$fila=$fila->getCellIterator("B","M");
+				$curp="";
+				$matricula="";
+
+				//Parametros para datos de calificaciones
+				$cont_columna=0;
+				$cont_cal_ingresadas=0;
+
+				//parametros para baja
+				$anio_baja="";
+				$mes_baja="";
+				$dia_baja="";
+				$observacion="";
+				$cont_fila_baja=0;
+				
+				
+				foreach ($fila as $celda) {
+					
+					$num_fila = $celda->getRow();
+					# Columna, que es la A, B, C y así...
+					$columna = $celda->getColumn();
+						if(!is_null($celda->getValue())){
+							if($columna=='B' && !is_null($celda->getValue())){
+								$curp=trim($celda->getValue());
+								$cont_columna++;
+								
+							}
+
+							if($columna=='C'){
+								$matricula=trim($celda->getCalculatedValue());
+							}
+
+							if($columna=='D' && trim($celda->getValue())!='' && in_array($celda->getValue(), $calificacion_valida)){
+								$cont_columna++;
+								$cont_cal_ingresadas++;
+								
+							}
+		
+							if($columna=='E' && trim($celda->getValue())!='' && in_array($celda->getValue(), $calificacion_valida)){
+								$cont_columna++;
+								$cont_cal_ingresadas++;
+								
+							}
+		
+							if($columna=='F' && trim($celda->getValue())!='' && in_array($celda->getValue(), $calificacion_valida)){
+								$cont_columna++;
+								$cont_cal_ingresadas++;
+								
+							}
+		
+							if($columna=='G' && trim($celda->getCalculatedValue())!='' && in_array($celda->getCalculatedValue(), $calificacion_valida)){
+								$cont_columna++;
+								
+								
+								
+							}
+		
+		
+							if($columna=='H' && trim($celda->getValue())!='' && in_array($celda->getValue(), $calificacion_valida)){
+								$cont_columna++;
+								$cont_cal_ingresadas++;
+								
+								
+							}
+		
+							if($columna=='I' && trim($celda->getCalculatedValue())!='' && in_array($celda->getCalculatedValue(), $calificacion_valida)){
+								if($cont_cal_ingresadas==4){
+									$cont_columna++;
+									
+								}
+							}
+
+							if($columna=='J'){
+								$anio_baja=$celda->getCalculatedValue();
+								$cont_fila_baja++;
+								
+							}
+							if($columna=='K'){
+								$mes_baja=$celda->getCalculatedValue();
+								$cont_fila_baja++;
+								
+							}
+							if($columna=='L'){
+								$dia_baja=$celda->getCalculatedValue();
+								$cont_fila_baja++;
+								
+							}
+							if($columna=='M'){
+								$observacion=$celda->getCalculatedValue();
+								$cont_fila_baja++;
+								
+							}
+						
+						}
+				}
+					$cont_fila++;
+					if($cont_fila>35){
+					break;
+
+					}
+					else{
+						if($curp!=""){
+							$existe_estudiante=count($this->M_estudiante->get_estudiante_x_curp_matricula_semestre_plantel($curp,$matricula,$modulo,$plantel_cct));
+							
+							if($existe_estudiante<=0){
+								$cont_no_existe_alumno++;
+								$mensaje_curp_no_existe=$mensaje_curp_no_existe.", ".$curp;
+							}
+						}
+						
+
+						if($cont_columna!=0 && $cont_columna<7){
+							$cont_cal_imcompleta++;
+								$resultado_error_calificaciones.="fila ".$num_fila.", ";
+							
+						}
+
+						if($cont_fila_baja!=0 && $cont_fila_baja<4){
+							$resultado_error.="<li>Falta ingresar datos en fecha y motivo de baja correspondiente a la fila <span style='font-weight:bold'>".$num_fila."</span>.</li>";
+						}
+						else{
+							if($cont_fila_baja==4){
+								if(!$this->validar_fecha($anio_baja,$mes_baja,$dia_baja)){
+									$resultado_error.="<li>El formato de fecha de baja no es valida en la fila <span style='font-weight:bold'>".$num_fila."</span>.</li>";
+									
+			
+								 }
+
+								 if($curp==""){
+									$resultado_error.="<li>Faltan ingresar datos de CURP en la fila ".$num_fila."</li>";
+								 }
+			
+							}
+			
+						}
+
+					}
+			
+			}
+
+			if($cont_no_existe_alumno>0){
+				$resultado_error.="<li>No se encuentra registrado en el semestre y plantel seleccionado alumno(s) con CURP: <span style='font-weight:bold'>".trim($mensaje_curp_no_existe,", ")."</span>.</li>";
+			}
+
+
+		if($cont_cal_imcompleta>0){
+			$resultado_error.="<li>Alguna de las celdas se encuentran vacias o no cumple con los criterios establecidos (CURP, Concentrado de calificaciones de parciales, modular y final) en: <span style='font-weight:bold'>".trim($resultado_error_calificaciones,", ").".</span></li>";
+		}
+
+
+		if($resultado_error!=""){
+			$this->form_validation->set_message('checkValidateMasivoExcel',$resultado_error);
+			return false;
+
+		 }
+		 else{
+			return true;
+		 }
+
+	}
 
 }
 //Hola mundo

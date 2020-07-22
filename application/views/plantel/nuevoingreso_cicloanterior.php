@@ -1327,9 +1327,9 @@
       errores_ciclo_anterior+="<li>El aspirante no puede ser registrado porque adeuda mas de 3 materias</li>";
     }
 
-    if(ultimo_semestre_acreditado>1){
+    /*if(ultimo_semestre_acreditado>1){
       errores_ciclo_anterior+="<li>El aspirante debe tener acreditado unicamente el primer semestre</li>";
-    }
+    }*/
 
 
    anio= id_ciclo_escolar[x].text.split("-");

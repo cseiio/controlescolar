@@ -17,17 +17,17 @@ class M_permisos_extemporaneo extends CI_Model {
 }
 
    function get_estudiantes_por_calificar_extemporaneo($id_grupo,$id_materia){
-    $registros = $this->db->query("SELECT *,p.primer_parcial as p1,p.segundo_parcial as p2,p.tercer_parcial as p3,p.examen_final as final FROM Permisos_extemporaneo p inner join Estudiante e on e.no_control=p.Estudiante_no_control inner join Grupo_Estudiante ge on e.no_control=ge.Estudiante_no_control inner join Materia m on ge.id_materia=m.clave where id_grupo='".$id_grupo."' and p.estatus=1 and p.id_materia='".$id_materia."' and ge.id_materia='".$id_materia."' group by e.no_control order by primer_apellido,segundo_apellido,nombre;")->result();
+    $registros = $this->db->query("SELECT *,p.primer_parcial as p1,p.segundo_parcial as p2,p.tercer_parcial as p3,p.examen_final as final FROM Permisos_extemporaneo p inner join Estudiante e on e.no_control=p.Estudiante_no_control inner join Grupo_Estudiante ge on e.no_control=ge.Estudiante_no_control inner join Materia m on ge.id_materia=m.clave where id_grupo='".$id_grupo."' and p.estatus=1 and p.id_materia='".$id_materia."' and ge.id_materia='".$id_materia."' and CURDATE()>=fecha_inicio and curdate()<=fecha_fin group by e.no_control order by primer_apellido,segundo_apellido,nombre;")->result();
     return $registros;
  }
   
    function get_materias_por_calificar_extemporaneo($id_grupo){
-    $registros = $this->db->query("SELECT p.id_grupo,m.clave,m.unidad_contenido FROM Permisos_extemporaneo p inner join Materia m on p.id_materia=m.clave where p.id_grupo='".$id_grupo."' and estatus=1 group by m.clave;")->result();
+    $registros = $this->db->query("SELECT p.id_grupo,m.clave,m.unidad_contenido FROM Permisos_extemporaneo p inner join Materia m on p.id_materia=m.clave where p.id_grupo='".$id_grupo."' and estatus=1 and CURDATE()>=fecha_inicio and curdate()<=fecha_fin group by m.clave;")->result();
     return $registros;
  }
 
    function get_semestre_grupos_htmloption($plantel,$semestre){
-    $registros = $this->db->query("SELECT p.id_grupo,nombre_grupo FROM Permisos_extemporaneo p inner join Grupo g on p.id_grupo=g.id_grupo where semestre=".$semestre." and p.estatus=1 and Plantel_cct_plantel='".$plantel."' group by p.id_grupo;")->result();
+    $registros = $this->db->query("SELECT p.id_grupo,nombre_grupo FROM Permisos_extemporaneo p inner join Grupo g on p.id_grupo=g.id_grupo where semestre=".$semestre." and p.estatus=1 and Plantel_cct_plantel='".$plantel."' and CURDATE()>=fecha_inicio and curdate()<=fecha_fin group by p.id_grupo;")->result();
     $respuesta = "";
     $respuesta.='<option value="'."".'">'."Seleccione grupo".'</option>';
     foreach($registros as $registro){

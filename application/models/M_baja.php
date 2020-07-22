@@ -7,6 +7,10 @@ class M_baja extends CI_Model {
    }
 
 
+   function baja_estudiante_x_ciclo($no_control,$id_grupo){
+    return $this->db->query("select * from Baja b inner join (select Estudiante_no_control,Ciclo_escolar_id_ciclo_escolar,fecha_inicio,fecha_terminacion from Ciclo_escolar c inner join Grupo_Estudiante ge on ge.Ciclo_escolar_id_ciclo_escolar=c.id_ciclo_escolar where Estudiante_no_control='".$no_control."' and Grupo_id_grupo='".$id_grupo."' limit 1) as ciclo_estudiante on ciclo_estudiante.Estudiante_no_control=b.Estudiante_no_control where b.fecha between ciclo_estudiante.fecha_inicio and ciclo_estudiante.fecha_terminacion")->result();
+ }
+
    public function eliminar_datos_baja($datos){
     
     $this->db->trans_start();

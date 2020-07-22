@@ -683,7 +683,7 @@ public function actualizar_estatus_estudiante($no_control,$num_adeudos,$modulo,$
    $semestre_en_curso=0;
    $num_semestres_trascurridos=0; //Contador de semestres.
 
-   $num_semestres_trascurridos=count($this->db->query("SELECT * FROM Ciclo_escolar where fecha_inicio between (select fecha_registro from Estudiante where no_control='".$no_control."') and CURDATE()")->result());
+   $num_semestres_trascurridos=count($this->db->query("SELECT * FROM Ciclo_escolar where fecha_inicio between (select fecha_inscripcion from Estudiante where no_control='".$no_control."') and (SELECT max(fecha_inicio) FROM Ciclo_escolar limit 1)")->result());
 
  
   

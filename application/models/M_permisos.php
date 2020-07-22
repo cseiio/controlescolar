@@ -95,7 +95,7 @@ class M_permisos extends CI_Model {
 
 
    public function get_permiso_plantel($plantel){
-        return $this->db->query("select * from Permiso_calificacion where id_permiso=(select max(id_permiso) from Permiso_calificacion where Plantel_cct_plantel='".$plantel."' and estatus=0) and curdate() between fecha_inicio and fecha_fin")->result();
+        return $this->db->query("select * from Permiso_calificacion where Plantel_cct_plantel='".$plantel."' and estatus=1 and curdate() between fecha_inicio and fecha_fin")->result();
    }
 
 

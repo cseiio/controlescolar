@@ -7,6 +7,24 @@ class M_estudiante extends CI_Model {
       
    }
 
+   public function get_estudiante_x_curp_matricula_semestre_plantel($curp,$matricula,$semestre,$plantel){
+      $consulta_matricula=" matricula is NULL";
+      if($matricula!="" and $matricula!=null){
+         $consulta_matricula=" matricula=".$matricula;
+      }
+      return $this->db->query("select no_control from Estudiante where curp='".$curp."' and ".$consulta_matricula." and Plantel_cct_plantel='".$plantel."' and semestre_en_curso=".$semestre.";")->result();
+   
+   }
+
+   public function get_estudiante_x_curp_matricula($curp,$matricula){
+      $consulta_matricula=" matricula is NULL";
+      if($matricula!="" and $matricula!=null){
+         $consulta_matricula=" matricula=".$matricula;
+      }
+      return $this->db->query("select no_control from Estudiante where curp='".$curp."' and ".$consulta_matricula.";")->result();
+   
+   }
+
 public function update_estudiante_campos_activos($no_control,$lugar_nacimiento){
    
       $this->db->trans_start();

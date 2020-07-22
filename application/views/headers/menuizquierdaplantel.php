@@ -63,4 +63,11 @@
         <span>Carga de documentos</span>
       </a>
     </li>
+    <li class="nav-item ">
+      <a class="nav-link <?php ($this->uri->segment(2)=='administrar_asesores' || $this->uri->segment(2)=='alta_baja_asesores') ? print 'bg-info text-light' : print null; ?>"
+      href="<?php echo base_url();?>index.php/c_vistas/administrar_asesores">
+        <i class="material-icons">people_outline</i>
+        <span>Administración de Asesores</span>
+      </a>
+    </li>
   </ul>

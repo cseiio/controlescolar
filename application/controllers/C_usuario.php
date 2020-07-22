@@ -14,7 +14,7 @@ class C_usuario extends CI_Controller {
 
     public function index(){
 
- 
+		$this->load->library('user_agent');
 		//restrict users to go back to login if session has been set
 		if($this->session->userdata('user')){
 			redirect(base_url().'index.php/c_menu/principal');
@@ -98,6 +98,14 @@ public function editar_usuario(){
 public function borrar_usuario(){
 	$datos = json_decode($this->input->raw_input_stream);
 	echo $this->M_usuario->borrar_usuario($datos);
+}
+
+
+public function redirigir_info(){
+	$data['title'] = 'Información';
+		$this->load->view('headers/cabecera', $data);
+		$this->load->view('informacion');
+		$this->load->view('footers/footer.php');
 }
 
 

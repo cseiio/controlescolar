@@ -5,6 +5,25 @@ class M_grupo_estudiante extends CI_Model {
       
    }
 
+   public function actualizar_calificaciones($parametros,$datos){
+    $this->db->trans_start();
+
+        $this->db->where('Grupo_id_grupo',$parametros->id_grupo);
+        $this->db->where('Estudiante_no_control',$parametros->no_control);
+        $this->db->where('Ciclo_escolar_id_ciclo_escolar',$parametros->id_ciclo_escolar);
+        $this->db->where('id_materia',$parametros->id_materia);
+        $this->db->update('Grupo_Estudiante', $datos);
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            return "no";
+        }
+
+        else{
+            return "si";
+        }
+   }
 
    public function busqueda_alumnos_grupo($curp,$cct_plantel){
     return $this->db->query("SELECT * FROM Estudiante e inner join Grupo_Estudiante ge on e.no_control=ge.Estudiante_no_control inner join Grupo g on ge.Grupo_id_grupo=g.id_grupo where g.estatus=1 and curp like '%".$curp."%' and Plantel_cct_plantel like '%".$cct_plantel."%' group by e.no_control order by e.primer_apellido,e.segundo_apellido,e.nombre,e.semestre_en_curso;")->result();

@@ -1,4 +1,10 @@
+<?php
 
+if(trim($this->agent->browser())!='Firefox' && trim($this->agent->browser())!='Chrome'){
+  redirect(base_url().'index.php/c_usuario/redirigir_info');
+}
+
+?>
 <div class="div_carga"id="div_carga">
 <img class="cargador" id="cargador" src="<?php echo base_url();?>assets/img/loading-63.gif"/>
 </div>

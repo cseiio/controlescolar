@@ -41,7 +41,7 @@
               <label class="form-group has-float-label seltitulo">
                 <select class="form-control form-control-lg selcolor" required="required"
                   id="asesor_plantel_busqueda" name="asesor_plantel_busqueda">
-                  <option value="">Buscar en todos los planteles</option>
+                  
 
                   <?php
                       foreach ($planteles as $plantel)

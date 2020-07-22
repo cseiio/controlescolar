@@ -41,49 +41,89 @@ class MYPDF extends TCPDF {
 	//Page header
 	public function Header() {
 
+        $image_file =base_url().'assets/img/logo_cseiio.png';
+        $this->Image($image_file, 14, 15, 10, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
 		// Titulo
 		//$this->SetXY(25,10);
 		//$this->Cell(0,0, '<p>COLEGIO SUPERIOR PARA LA EDUCACION INTEGRAL INTERCULTURAL DE OAXACA</p>', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-        $this->writeHTMLCell($w = 0, $h = 0, $x = '0', $y = '10', '<p style="font-size:7pt;font-weight: bold">COLEGIO SUPERIOR PARA LA EDUCACION INTEGRAL INTERCULTURAL DE OAXACA</p>', $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);
-        $this->writeHTMLCell($w = 0, $h = 0, $x = '0', $y = '15', '<p style="font-size:6pt;font-weight: bold">DEPARTAMENTO DE CONTROL ESCOLAR</p>', $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);
-        $this->writeHTMLCell($w = 0, $h = 0, $x = '0', $y = '22', '<p style="font-size:7pt;font-weight: bold">ACTA DE EXAMEN DE REGULARIZACION</p>', $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);
-        $this->writeHTMLCell($w = 0, $h = 0, $x = '0', $y = '27', '<p style="font-size:7pt;font-weight: bold">'.$this->mes.'</p>', $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);//MES
+        $this->writeHTMLCell($w = 0, $h = 0, $x = '20', $y = '10', '<span style="text-align:center;font-size:8pt;  font-weight:bold">COLEGIO SUPERIOR PARA LA EDUCACIÓN INTEGRAL INTERCULTURAL DE OAXACA</span><br>
+        <span style="text-align:center;font-size:7.5pt;  font-weight:bold">DEPARTAMENTO DE CONTROL ESCOLAR</span>', $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);
+        
+        $this->writeHTMLCell($w = 0, $h = 0, $x = '20', $y = '22', '<p style="font-size:7pt;font-weight: bold">ACTA DE EXAMEN DE REGULARIZACIÓN</p>', $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);
+        $this->writeHTMLCell($w = 0, $h = 0, $x = '20', $y = '27', '<p style="font-size:7pt;font-weight: bold">'.$this->mes.'</p>', $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);//MES
+
+        $tabla_plan='<table style="width:100%;background-color:#eaeaea" border="1"  >
+        <tr>
+          <th><span style="font-weight:bold;font-size:7px;line-height: 100%;">PLAN ACTUAL</span></th>
+          
+        </tr>
+      </table>';
+        
+        $this->writeHTMLCell($w = 0, $h = 0, $x = '170', $y = '20', $tabla_plan, $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);
 
         $encabezado = '
-        <table border="1" style="font-size:7pt">
+        <table style="font-size:7pt" CELLPADDING="1">
         <tbody>
         <tr>
-        <td colspan="3" style="font-weight: bold;text-align:left"> '.$this->nombre_bic.'</td>
+        <td colspan="3" style="font-weight: bold;text-align:left;border-top: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;"> '.$this->nombre_bic.'</td>
+        </tr>
+
+        <tr style="text-align:left;border-bottom: 1px solid black;">
+        <td style="text-align:left;border-top: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;"> <table style="width:100%">
+        <tr>
+          <th>C.C.T.:</th>
+          <th><span style="font-weight: bold;">'.$this->cct.'</span></th>
+        </tr>
+      </table></td>
+        <td style="text-align:left;border-top: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;"></td>
+        <td style="text-align:left;border-top: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;"> <table style="width:100%">
+        <tr>
+          <th>CICLO ESCOLAR:</th>
+          <th><span style="font-weight: bold;">'.$this->ciclo_escolar.'</span></th>
+        </tr>
+      </table></td>
         </tr>
 
         <tr>
-        <td style="text-align:left"> C.C.T.:'.$this->cct.'</td>
-        <td></td>
-        <td style="text-align:left"> CICLO ESCOLAR:'.$this->ciclo_escolar.'</td>
+        <td style="text-align:left;border-top: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;"> FECHA Y HORA DE APLICACIÓN DE EXAMEN</td>
+        <td colspan="2" style="text-align:center;border-top: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;"> '.$this->fecha_hora.'</td>
         </tr>
 
         <tr>
-        <td style="text-align:left"> FECHA Y HORA DE APLICACION DE EXAMEN</td>
-        <td colspan="2" style="text-align:left"> '.$this->fecha_hora.'</td>
+        <td style="text-align:center;border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
+        </td>
+        <td colspan="2" style="text-align:center;border-top: 1px solid black;border-right: 1px solid black;">
+        
+        </td>
         </tr>
 
         <tr>
-        <td colspan="3"></td>
+        <td style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;border-right: 1px solid black;background-color:#eaeaea">
+        
+            <table style="width:100%;" CELLPADDING="3">
+            <tr>
+              <td><span style="text-align:left;">CLAVE:</span></td>
+              <td><span style="font-weight: bold;text-align:center;">'.$this->clave.'</span></td>
+            </tr>
+          </table>
+        </td>
+        <td colspan="2" style="text-align:center;border-bottom: 1px solid black;border-right: 1px solid black;">
+        </td>
         </tr>
 
         <tr>
-        <td style="text-align:left"> CLAVE:'.$this->clave.'</td>
-        <td colspan="2"></td>
-        </tr>
-
-        <tr>
-        <td colspan="3" style="text-align:left"> UNIDAD DE CONTENIDO:'.$this->unidad_contenido.'</td>
+        <td colspan="3" style="text-align:left;border-top: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;"> UNIDAD DE CONTENIDO: <span style="font-weight: bold;text-transform:uppercase">'.$this->unidad_contenido.'</span></td>
         </tr>
         </tbody>
         </table>
         ';
 
+        
+
         $this->writeHTMLCell($w = 0, $h = 0, $x = '15', $y = '34', $encabezado, $border = 0, $ln = 1, $fill = 0, $reseth = false, $align = 'C', $autopadding = true);
+
+        
 	}
 
 
@@ -94,15 +134,15 @@ class MYPDF extends TCPDF {
         <table border="1">
         <tbody>
         <tr>
-        <td style="height:80px">'.$this->asesor.'</td>
-        <td>'.$this->director.'</td>
+        <td style="height:80px;"><br><br><br><br><br><br>'.$this->asesor.'</td>
+        <td><br><br><br><br><br><br>'.$this->director.'</td>
         </tr>
         </tbody>
         </table>
         ';
 
         $tabla_titulos='
-        <table>
+        <table >
         <tbody>
         <tr>
         <td >NOMBRE Y FIRMA DEL ASESOR(A)</td>
@@ -116,7 +156,7 @@ class MYPDF extends TCPDF {
         <table border="1">
         <tbody>
         <tr>
-        <td style="height:20px;width:305px;text-align:left"> VALIDO:</td>
+        <td style="height:20px;width:305px;text-align:left"> VALIDÓ:</td>
         </tr>
         </tbody>
         </table>
@@ -146,7 +186,15 @@ $pdf->ciclo_escolar = "2019-2020";
 $pdf->fecha_hora = $fecha_hora->fecha_calificacion." ".$fecha_hora->hora." HRS";
 $pdf->clave = $materia->clave;
 $pdf->unidad_contenido = $materia->unidad_contenido;
-$pdf->asesor = $asesor->nombre." ".$asesor->primer_apellido." ".$asesor->segundo_apellido;
+
+if(isset($asesor)){
+  $pdf->asesor = $asesor->nombre." ".$asesor->primer_apellido." ".$asesor->segundo_apellido;
+}
+else{
+  $pdf->asesor="";
+}
+
+
 $pdf->director = $plantel->director;
 
 //--------------------------------------------
@@ -168,7 +216,7 @@ $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 // set margins
-$pdf->SetMargins(15,60,19);
+$pdf->SetMargins(15,70,19);
 $pdf->SetHeaderMargin(60);
 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -241,7 +289,7 @@ function rellenar($con_grupo,$sin_grupo){
 
         $respuesta.='
         <tr>
-        <td style="width:30px;height:20px">'.$foliador.'</td>
+        <td style="width:30px;">'.$foliador.'</td>
         <td style="width:50px">'.($estudiante->ultimo_grupo[0]).'</td>
         <td style="width:40px">'.($estudiante->ultimo_grupo[1]).'</td>
         <td style="width:75px">'.$estudiante->matricula.'</td>
@@ -258,7 +306,7 @@ function rellenar($con_grupo,$sin_grupo){
 
     $respuesta.='
         <tr style="background-color:gray">
-        <td style="width:30px;height:20px"></td>
+        <td style="width:30px;"></td>
         <td style="width:50px"></td>
         <td style="width:40px"></td>
         <td style="width:75px"></td>
@@ -273,7 +321,7 @@ function rellenar($con_grupo,$sin_grupo){
 
             $respuesta.='
             <tr>
-            <td style="width:30px;height:20px">'.$foliador.'</td>
+            <td style="width:30px;">'.$foliador.'</td>
             <td style="width:50px">'.($estudiante->ultimo_grupo[0]).'</td>
             <td style="width:40px">'.($estudiante->ultimo_grupo[1]).'</td>
             <td style="width:75px">'.$estudiante->matricula.'</td>
@@ -296,23 +344,23 @@ function rellenar($con_grupo,$sin_grupo){
 
 ////datos-------------------------------------
 $tabla = '
-<table border="1" style="font-size:6pt">
+<table border="1" style="font-size:6pt" CELLPADDING="4">
 <tbody>
 <tr>
-<td style="width:30px;font-weight: bold" rowspan="2">N.P.</td>
-<td style="width:50px;font-weight: bold" rowspan="2">SEMESTRE</td>
-<td style="width:40px;font-weight: bold" rowspan="2">GRUPO</td>
-<td style="width:75px;font-weight: bold" rowspan="2">MATRICULA</td>
-<td style="width:340px;font-weight: bold" colspan="3">NOMBRE DEL ALUMNO</td>
-<td style="width:85px;font-weight: bold" colspan="2">CALIFICACION</td>
+<td style="width:30px;font-weight: bold;line-height: 300%;text-align:center" rowspan="2">N.P.</td>
+<td style="width:50px;font-weight: bold;line-height: 300%;" rowspan="2">SEMESTRE</td>
+<td style="width:40px;font-weight: bold;line-height: 300%;" rowspan="2">GRUPO</td>
+<td style="width:75px;font-weight: bold;line-height: 300%;text-align:center" rowspan="2">MATRICULA</td>
+<td style="width:340px;font-weight: bold;text-align:center" colspan="3">NOMBRE DEL ALUMNO</td>
+<td style="width:85px;font-weight: bold;text-align:center" colspan="2">CALIFICACIÓN</td>
 </tr>
 
 <tr>
-<td style="width:110px;font-weight: bold">PATERNO</td>
-<td style="width:110px;font-weight: bold">MATERNO</td>
-<td style="width:120px;font-weight: bold">NOMBRE(S)</td>
-<td style="width:42.5px;font-weight: bold">NUMERO</td>
-<td style="width:42.5px;font-weight: bold">LETRA</td>
+<td style="width:110px;font-weight: bold;text-align:center">PATERNO</td>
+<td style="width:110px;font-weight: bold;text-align:center">MATERNO</td>
+<td style="width:120px;font-weight: bold;text-align:center">NOMBRE(S)</td>
+<td style="width:42.5px;font-weight: bold;text-align:center">NUMERO</td>
+<td style="width:42.5px;font-weight: bold;text-align:center">LETRA</td>
 </tr>
 
 '.rellenar($estudiantes_con_grupo,$estudiantes_sin_grupo).'
@@ -326,7 +374,7 @@ $pdf->writeHTML($tabla, true, false, true, false, '');
 //------------------------------------------------------------------
 
 //Close and output PDF document
-$pdf->Output('example_003.pdf', 'I');
+$pdf->Output('Acta de Regularizacion.pdf', 'I');
 
 //============================================================+
 // END OF FILE

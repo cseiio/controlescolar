@@ -22,7 +22,12 @@ class C_acta_regularizacion extends CI_Controller {
         $datos['plantel'] = $this->M_plantel->get_plantel($plantel)[0];
         $datos['fecha_hora'] = $this->M_acta_regularizacion->fecha_hora_regularizacion($mes,$ano,$plantel,$materia)[0];
         $datos['materia'] = $this->M_acta_regularizacion->materia($materia);
-        $datos['asesor'] = $this->M_acta_regularizacion->asesor($mes,$ano,$plantel,$materia)[0];
+        $existe_asesor=count($this->M_acta_regularizacion->asesor($mes,$ano,$plantel,$materia));
+        if($existe_asesor>0){
+            $datos['asesor'] = $this->M_acta_regularizacion->asesor($mes,$ano,$plantel,$materia)[0];
+        }
+        
+        
         $mes_dato = "";
         switch($mes){
             case 1:

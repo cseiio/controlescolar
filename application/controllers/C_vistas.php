@@ -519,11 +519,11 @@ public function resolucion_equivalencia(){
 
     //Acreditacion------------------------------------------------------------
 
-    public function control_asesores(){
+    public function alta_baja_asesores(){
         if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='ADMINISTRADOR'){
         $datos['planteles'] = $this->M_plantel->get_planteles();
         $datos['puestos_trabajo'] = $this->M_asesor->get_puestos();
-        $data= array('title'=>'Control Asesores');
+        $data= array('title'=>'Alta/Baja de Asesores');
         $this->load->view("headers/cabecera", $data);
         $this->load->view("headers/menuarriba");
         $this->load->view("headers/menuizquierda");
@@ -531,19 +531,23 @@ public function resolucion_equivalencia(){
         $this->load->view("footers/footer");
         }
         else if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='CESCOLAR'){
-            $data= array('title'=>'Control Asesores');
+            $datos['planteles'] = $this->M_plantel->get_planteles();
+        $datos['puestos_trabajo'] = $this->M_asesor->get_puestos();
+            $data= array('title'=>'Alta/Baja de Asesores');
             $this->load->view("headers/cabecera", $data);
             $this->load->view("headers/menuarriba");
             $this->load->view("headers/menuizquierdacescolar");
-            //$this->load->view("admin/acreditacion");
+            $this->load->view("admin/control_asesores",$datos);
             $this->load->view("footers/footer");
             }
         else if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='PLANTEL'){
-            $data= array('title'=>'Control Asesores');
+            $datos['planteles'] = $this->M_plantel->get_plantel($this->session->userdata('user')['plantel']);
+            $datos['puestos_trabajo'] = $this->M_asesor->get_puestos();
+            $data= array('title'=>'Alta/Baja de Asesores');
             $this->load->view("headers/cabecera", $data);
             $this->load->view("headers/menuarriba");
             $this->load->view("headers/menuizquierdaplantel");
-            //$this->load->view("plantel/acreditacion");
+            $this->load->view("plantel/control_asesores",$datos);
             $this->load->view("footers/footer");
             }
             else{
@@ -1671,6 +1675,39 @@ public function resolucion_equivalencia(){
     redirect(base_url().'index.php/c_usuario');
     }
 
+    }
+
+
+
+
+    public function administrar_asesores(){
+        if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='ADMINISTRADOR'){
+        $data= array('title'=>'Administración de Asesores');
+        $this->load->view("headers/cabecera", $data);
+        $this->load->view("headers/menuarriba");
+        $this->load->view("headers/menuizquierda");
+        $this->load->view("admin/administracion_asesor");
+        $this->load->view("footers/footer");
+        }
+        else if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='CESCOLAR'){
+            $data= array('title'=>'Administración de Asesores');
+            $this->load->view("headers/cabecera", $data);
+            $this->load->view("headers/menuarriba");
+            $this->load->view("headers/menuizquierdacescolar");
+            $this->load->view("admin/administracion_asesor");
+            $this->load->view("footers/footer");
+            }
+        else if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='PLANTEL'){
+            $data= array('title'=>'Administración de Asesores');
+            $this->load->view("headers/cabecera", $data);
+            $this->load->view("headers/menuarriba");
+            $this->load->view("headers/menuizquierdaplantel");
+            $this->load->view("plantel/administracion_asesor");
+            $this->load->view("footers/footer");
+            }
+            else{
+            redirect(base_url().'index.php/c_usuario');
+            }
     }
 
 

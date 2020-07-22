@@ -43,6 +43,9 @@
                     <a href="<?php echo base_url();?>formatos/segundo_semestre_desertor.xlsx" class="list-group-item list-group-item-info">
                     <i class="material-icons">archive</i> Segundo semestre desertor.xls
                     </a>
+                    <a href="<?php echo base_url();?>formatos/segundo_semestre_traslado.xlsx" class="list-group-item list-group-item-info">
+                    <i class="material-icons">archive</i> Segundo semestre traslado.xls
+                    </a>
 
                 </div>
         
@@ -67,6 +70,16 @@
                     <i class="material-icons">archive</i> Tercer semestre traslado.xls
                     </a>
                     
+                </div>
+                
+                <a href="#lista4" class="list-group-item color" data-toggle="collapse"
+                  data-parent="#menuLista">
+                  Archivos XLS Excel envío masivo<i class="material-icons" style="vertical-align: -6px;">keyboard_arrow_right</i>
+                </a>
+                <div class="collapse" id="lista4">
+                    <a href="<?php echo base_url();?>formatos/segundo_semestre_masivo.xlsx" class="list-group-item list-group-item-info">
+                    <i class="material-icons">archive</i> Segundo semestre.xls
+                    </a>
                 </div>
         
                 <!-- <a href="#" class="list-group-item color">Configuración</a> -->

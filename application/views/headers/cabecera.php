@@ -112,10 +112,10 @@
 
           permisos_extemporaneo.onload = function () {
             if(JSON.parse(permisos_extemporaneo.response).length>0){
-              $("#alerta_reg").css("display", "");
-              $("#alerta_reg").append('Tiene permisos de parciales extemporaneos, verifique.');
+              $("#alerta_cal_extemporanea").css("display", "");
+              $("#alerta_cal_extemporanea").append('Tiene permisos de parciales extemporaneos, verifique.');
             }else{
-              $("#alerta_reg").css("display", "none");
+              $("#alerta_cal_extemporanea").css("display", "none");
             }
           };
           permisos_extemporaneo.send(null);
