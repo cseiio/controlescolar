@@ -814,5 +814,14 @@ public function eliminar_estudiante_permanente_bd($datos){
 }
 
 
+
+
+public function existe_estudiante($no_control){
+   return $this->db->get_where('Estudiante',array(
+      'no_control' => $no_control
+   ))->result();
+
+}
+
 }
 ?>

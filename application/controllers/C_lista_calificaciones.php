@@ -643,5 +643,301 @@ class C_lista_calificaciones extends CI_Controller {
 
     }
 
+
+
+
+    public function lista_alumnos_formato_excel(){
+        $grupo = $this->input->get("grupo");
+        $materia = $this->input->get("materia");
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $respuesta='';
+        
+
+        $sheet2 = $spreadsheet->getActiveSheet();
+        $sheet2->getSheetView()->setZoomScale(80);
+
+        $datos_estudiante = $this->M_grupo_estudiante->datos_estudiantes_grupo_materia($grupo,$materia);
+        $datos_plantel = $this->M_grupo_estudiante->plantel_grupo($grupo);
+        $datos_materia = $this->M_grupo_estudiante->datos_materia_grupo($materia,$grupo);
+        $datos_fecha_fin = $this->M_ciclo_escolar->fecha_fin_ciclo();
+        $datos_asesor = $this->M_asesor->asesor_materia_grupo($grupo,$materia);
+        $bajas = array();
+        $contador_array_baja = 0;
+
+        $sheet2->getColumnDimension('A')->setWidth(5);
+		$sheet2->getColumnDimension('B')->setWidth(10);
+		$sheet2->getColumnDimension('C')->setWidth(20);
+		$sheet2->getColumnDimension('D')->setWidth(30);
+		$sheet2->getColumnDimension('E')->setWidth(30);
+		$sheet2->getColumnDimension('F')->setWidth(30);
+
+        // manually set table data value
+        $cont_fila_excel=1;
+        $cont_numero=0;
+
+        $styleArray = [
+            'font' => [
+                'bold' => true,
+                'size'  => 10,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'FFC4BD97',
+                ]
+            ],
+        ];
+
+        $styleArrayListaAlumno1 = [
+            'font' => [
+                'size'  => 12,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ]
+        ];
+
+       
+
+        $styleArrayListaAlumno2 = [
+            'font' => [
+                'size'  => 14,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ]
+        ];
+
+        $styleArrayListaCintillo = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'FF808080',
+                ]
+            ],
+        ];
+
+        $styleArrayListaCintilloBaja = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'FFBFBFBF',
+                ]
+            ],
+        ];
+
+        $styleArrayTitulo1 = [
+            'font' => [
+                'bold' => true,
+                'size'  => 12,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayTitulo2 = [
+            'font' => [
+                'bold' => true,
+                'size'  => 12,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayTitulo3 = [
+            'font' => [
+                'bold' => true,
+                'italic' => true,
+                'size'  => 12,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayTitulo4 = [
+            'font' => [
+                'italic' => true,
+                'size'  => 10,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayTitulo5 = [
+            'font' => [
+                'bold' => true,
+                'size'  => 10,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayTitulo6 = [
+            'font' => [
+                'size'  => 11,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayTituloFecha = [
+            'font' => [
+                'size'  => 12,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayFecha = [
+            'font' => [
+                'size'  => 12,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayNombreAsesorDirector = [
+            'font' => [
+                'size'  => 11,
+                'name'  => 'Arial'
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $styleArrayTituloAsesorDirector = [
+            'font' => [
+                'size'  => 10,
+                'name'  => 'Arial'
+            ],
+            'borders' => [
+                'top' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        
+        
+        $sheet2->setCellValue('A1',"No.");
+		$sheet2->setCellValue('B1',"GRUPO");
+		$sheet2->setCellValue('C1',"NUM. DE CONTROL");
+		$sheet2->setCellValue('D1',"PRIMER APELLIDO");
+		$sheet2->setCellValue('E1',"SEGUNDO APELLIDO");
+		$sheet2->setCellValue('F1',"NOMBRE(S)");
+        
+       
+        foreach($datos_estudiante as $estudiante){
+            $cont_fila_excel++;
+            $cont_numero++;
+
+            
+            $sheet2->setCellValue('A'.$cont_fila_excel, str_pad($cont_numero,2,0,STR_PAD_LEFT));
+            $sheet2->setCellValue('B'.$cont_fila_excel,trim(strtoupper($datos_materia->nombre_grupo)));
+            $sheet2->setCellValue('C'.$cont_fila_excel, trim($estudiante->no_control));
+            $sheet2->setCellValue('D'.$cont_fila_excel, $estudiante->primer_apellido);
+            $sheet2->setCellValue('E'.$cont_fila_excel, $estudiante->segundo_apellido);
+            $sheet2->setCellValue('F'.$cont_fila_excel,$estudiante->nombre);
+            $sheet2->setCellValue('G'.$cont_fila_excel, '');
+            $sheet2->setCellValue('H'.$cont_fila_excel, '');
+            $sheet2->setCellValue('I'.$cont_fila_excel, '');
+            $sheet2->setCellValue('J'.$cont_fila_excel,'');
+
+            
+           
+            
+        }
+
+        
+       
+		$sheet2->getStyle('A1:F1')->applyFromArray($styleArrayTitulo5);
+		$sheet2->getStyle('A1:F35')->applyFromArray($styleArrayListaAlumno1);
+        
+        
+        
+       $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+ 
+        $filename = 'lista_de_alumnos'; // set filename for excel file to be exported
+ 
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // generate excel file
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+        ob_end_clean();
+        
+        $writer->save('php://output');	// download file
+        
+
+    }
+
    
 }

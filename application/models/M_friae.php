@@ -73,6 +73,32 @@ class M_friae extends CI_Model {
                 );
 
             }
+            else{
+                $tipo_ingreso_modulo='NUEVO INGRESO';
+                $estatus_inscripcion='';
+                $num_adeudos_inicio_modulo=0;
+                $materias_adeudo_inicio_modulo='';
+
+                $num_adeudos_regu_octubre=0;
+                $materias_adeudo_regu_octubre='';
+
+                $datos_friae = array(
+                    
+                    'numero_adeudos_inscripcion' => $num_adeudos_inicio_modulo,
+                    'id_materia_adeudos_inscripcion' => $materias_adeudo_inicio_modulo,
+                    'adeudos_primera_regularizacion' => $num_adeudos_regu_octubre,
+                    'id_materia_adeudos_primera_regularizacion' => $materias_adeudo_regu_octubre,
+                    'baja' => $e->fecha_baja,
+                    'tipo_ingreso_fin_semestre' => 'BAJA',
+                    'adeudos_fin_semestre' => 0,
+                    'id_materia_adeudos_fin_semestre'=>'',
+                    'adeudos_segunda_regularizacion'=>0,
+                    'id_materia_adeudos_segunda_regularizacion'=>'',
+                    'tipo_ingreso_despues_regularizacion'=> 'BAJA'
+        
+                );
+
+            }
             
         }
 

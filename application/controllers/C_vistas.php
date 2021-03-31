@@ -1449,6 +1449,44 @@ public function resolucion_equivalencia(){
 
     // fin de control de documentos ----------------------------------------------------------
 
+
+
+    //plantillas
+    public function plantillas(){
+
+        if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='ADMINISTRADOR'){
+        $data= array('title'=>'Formatos');
+        $this->load->view("headers/cabecera", $data);
+        $this->load->view("headers/menuarriba");
+        $this->load->view("headers/menuizquierda");
+        $this->load->view("admin/plantillas" );
+        $this->load->view("footers/footer");
+        }
+        else if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='CESCOLAR'){
+            $data= array('title'=>'Formatos');
+            $this->load->view("headers/cabecera", $data);
+            $this->load->view("headers/menuarriba");
+            $this->load->view("headers/menuizquierdacescolar");
+            $this->load->view("admin/plantillas" );
+            $this->load->view("footers/footer");
+            }
+        else if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='PLANTEL'){
+            $data= array('title'=>'Formatos');
+            $this->load->view("headers/cabecera", $data);
+            $this->load->view("headers/menuarriba");
+            $this->load->view("headers/menuizquierdaplantel");
+            $this->load->view("plantel/plantillas");
+            $this->load->view("footers/footer");
+            }
+            else{
+            redirect(base_url().'index.php/c_usuario');
+            }
+    } 
+
+
+
+    //TERmina plantillas
+
     // administracion del sistema ------------------------------------------------------------
     public function control_permisos(){
         if($this->session->userdata('user')['usuario']!='' && $this->session->userdata('user')['rol']=='ADMINISTRADOR'){

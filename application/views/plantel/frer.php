@@ -125,16 +125,49 @@ switch(periodo[0]){
   var mes = "1";
   break;
 
+  case "FEBRERO":
+  var mes = "2";
+  break;
+
+  case "MARZO":
+  var mes = "3";
+  break;
+
+  case "ABRIL":
+  var mes = "4";
+  break;
+
   case "MAYO":
   var mes = "5";
+  break;
+
+  case "JUNIO":
+  var mes = "6";
   break;
 
   case "JULIO":
   var mes = "7";
   break;
 
+  case "AGOSTO":
+  var mes = "8";
+  break;
+
+  case "SEPTIEMBRE":
+  var mes = "9";
+  break;
+  
+
   case "OCTUBRE":
   var mes = "10";
+  break;
+
+  case "NOVIEMBRE":
+  var mes = "11";
+  break;
+
+  case "DICIEMBRE":
+  var mes = "12";
   break;
 }
 

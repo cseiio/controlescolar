@@ -27,16 +27,49 @@ class C_frer extends CI_Controller {
             $datos['mes']="ENERO";
             break;
 
+            case "02":
+                $datos['mes']="FEBRERO";
+            break;
+
+            case "03":
+                $datos['mes']="MARZO";
+            break;
+
+            case "04":
+                $datos['mes']="ABRIL";
+            break;
+
             case "05":
             $datos['mes']="MAYO";
+            break;
+
+            case "06":
+                $datos['mes']="JUNIO";
             break;
 
             case "07":
             $datos['mes']="JULIO";
             break;
 
+            case "08":
+                $datos['mes']="AGOSTO";
+            break;
+
+            case "09":
+                $datos['mes']="SEPTIEMBRE";
+            break;
+
+
             case "10":
             $datos['mes']="OCTUBRE";
+            break;
+
+            case "11":
+                $datos['mes']="NOVIEMBRE";
+            break;
+
+            case "12":
+                $datos['mes']="DICIEMBRE";
             break;
         }
 
@@ -65,17 +98,49 @@ class C_frer extends CI_Controller {
             $datos['mes']="ENERO";
             break;
 
+            case "02":
+                $datos['mes']="FEBRERO";
+            break;
+
+            case "03":
+                $datos['mes']="MARZO";
+            break;
+
+            case "04":
+                $datos['mes']="ABRIL";
+            break;
+
             case "05":
             $datos['mes']="MAYO";
+            break;
+
+            case "06":
+                $datos['mes']="JUNIO";
             break;
 
             case "07":
             $datos['mes']="JULIO";
             break;
 
+            case "08":
+                $datos['mes']="AGOSTO";
+            break;
+
+            case "09":
+                $datos['mes']="SEPTIEMBRE";
+            break;
+
             case "10":
             $datos['mes']="OCTUBRE";
             break;
+
+            case "11":
+                $datos['mes']="NOVIEMBRE";
+                break;
+
+            case "12":
+                $datos['mes']="DICIEMBRE";
+                break;
         }
 
         $datos['revisor']=$this->M_friae->get_revisor($plantel);

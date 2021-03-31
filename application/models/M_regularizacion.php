@@ -481,9 +481,17 @@ class M_regularizacion extends CI_Model {
       return $this->db->query("SELECT distinct concat(
          CASE
              WHEN month(fecha_calificacion) =  1 THEN 'ENERO'
+             WHEN month(fecha_calificacion) =  2 THEN 'FEBRERO'
+             WHEN month(fecha_calificacion) =  3 THEN 'MARZO'
+             WHEN month(fecha_calificacion) =  4 THEN 'ABRIL'
              WHEN month(fecha_calificacion) =  5 THEN 'MAYO'
+             WHEN month(fecha_calificacion) =  6 THEN 'JUNIO'
              WHEN month(fecha_calificacion) =  7 THEN 'JULIO'
+             WHEN month(fecha_calificacion) =  8 THEN 'AGOSTO'
+             WHEN month(fecha_calificacion) =  9 THEN 'SEPTIEMBRE'
              WHEN month(fecha_calificacion) =  10 THEN 'OCTUBRE'
+             WHEN month(fecha_calificacion) =  11 THEN 'NOVIEMBRE'
+             WHEN month(fecha_calificacion) =  12 THEN 'DICIEMBRE'
          END,
          '-'
          ,

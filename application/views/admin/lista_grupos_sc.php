@@ -88,10 +88,16 @@
               </label>
             </div>
 
-            <div class="col-md-3 offset-md-2">
-              <button type="button" class="btn btn-success btn-lg btn-block" onclick="validarcomponente()"
-                style="padding: 1rem" id="crear_grupo">Imprimir materia</button>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-success btn-lg btn-block" onclick="validarcomponente(this.id)"
+                style="padding: 1rem" id="btn_pdf" name="btn_pdf">Imprimir materia</button>
             </div>
+
+            <div class="col-md-3">
+              <input type="button" class="btn btn-primary btn-lg btn-block" onclick="validarcomponente(this.id)"
+                style="padding: 1rem" id="btn_excel" name="btn_excel" value="Imprimir lista Excel"></input>
+            </div>
+
           </div>
         </div>
 
@@ -110,16 +116,29 @@
 <script>
 
 
-  function validarcomponente() {
+  function validarcomponente(tipo_boton) {
 
 if (document.getElementById("plantel").value != '' && document.getElementById("grupos").value != '' && document.getElementById("semestre_grupo").value != '' && document.getElementById("materias").value != '') {
+
+  switch (tipo_boton) {
+  case 'btn_pdf':
   window.open('<?php echo base_url();?>index.php/c_lista_calificaciones/lista_calificaciones_grupo_materia?grupo='+document.getElementById('grupos').value+'&materia='+document.getElementById('materias').value, '_blank');
+  break;
+  case 'btn_excel':
+    window.open('<?php echo base_url();?>index.php/c_lista_calificaciones/lista_alumnos_formato_excel?grupo='+document.getElementById("grupos").value+'&materia='+document.getElementById("materias").value, '_blanck');
+    break;
+
+  }
+
+
 } else {
   Swal.fire({
     type: 'warning',
     text: 'Agregue los datos faltantes'
   });
 }
+
+
 }
  
 function cambiarbusqueda() {
